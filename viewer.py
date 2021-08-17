@@ -55,7 +55,6 @@ if __name__ == '__main__':
                 - Ajustar a grid iterativamente"""
     parser = makeParser()
     args = parser.parse_args()
-    
     with rasterio.open(args.img, 'r+') as dataset:
         print("Loading image")
         print("(w, h): %r, %r" % (dataset.width, dataset.height))
@@ -80,33 +79,51 @@ if __name__ == '__main__':
         mycropper = Cropper(args.blocks, args.grid_x, args.grid_y)
     
     
-    gui = GUI(plt.figure(), mycropper.gridCornersX, 
-              mycropper.gridCornersY, npoints=4*args.blocks)
+    gui = GUI(plt.figure(), mycropper.gridCornersX, mycropper.gridCornersY, npoints=4*args.blocks)
     gui.imshow(rgb)
     while len(mycropper.gridCornersX) < 4 * args.blocks:
        gui.pause()
     
     mycropper.sortCorners()
     gui.drawRectangle(mycropper.gridCornersX, mycropper.gridCornersY)
-    grids = mycropper.calcGridsPoints()
-    for points in grids:
+
+#alterei o retorno do calcGridsPoints para devolver dois resuldos: o grids dos setors 1 a 4, que sao 9X5 e grid do setor 5, que é 5x9
+    grids1_a_4, grid5 = mycropper.calcGridsPoints()
+    print(" GRIDS 1 a 4 do viewer ===> ")
+    print(grids1_a_4)
+
+    print(" GRID 5 do viewer ===> ")
+    print(grid5)
+
+    for points in grids1_a_4:
+        print("estou no for grids1_a_4: ")
         gui.drawPoints(points[..., 0], points[..., 1])
-    
-    gui.drawGridsLines(grids, color='r')
+    #acrescentei para o setor 5
+    for points in grid5:
+        print("estou no for grid 5: ")
+        gui.drawPoints(points[..., 0], points[..., 1])
+
+    print("sai do for grids")
+    gui.drawGridsLines(grids1_a_4, grid5, color='r')
+    print("desenhei a grade")
 
     # tip: comment the if below if you only want to view if your drawing of the blocks was good enough to generate decent parcels
     if args.output_dir != "":
         # scale must be the same rate of the redimension of rd, gd, bd
         # the function used below will be changed for the corresponding experiment that you implement
         # TODO: turn this into a parsed argument
-        mycropper.saveCropsP2(np.dstack((ro, go, bo)), 
+
+        mycropper.saveCropsP8(np.dstack((ro, go, bo)),  
                             outputdir=args.output_dir,
                             timestamp=args.timestamp,
                             scale=4)
-        
+    print("vou para gui.block()")        
     gui.block()
+    print("sai do gui.block() ")            
 
     if args.save_points == True:
         corners = np.array([flat_list(mycropper.gridCornersY), 
                             flat_list(mycropper.gridCornersX)]).T
         save_points(args.img, corners)
+
+
