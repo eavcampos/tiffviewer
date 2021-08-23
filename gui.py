@@ -105,4 +105,3 @@ class GUI():
 
     def block(self):
         plt.show()
-

@@ -91,7 +91,7 @@ class Cropper():
 
 ############
  #o if abaixo foi criado para tratar o setor 5, cujas dimensoes sao 5X9, tranposto aos demais, que são 9X5
-            if cont == 3:  #TROCAR POR 5, QUE É O ULTIMO SETOR DA P8
+            if cont == 5:  #TROCAR POR 5, QUE É O ULTIMO SETOR DA P8
                # src[1,0] is width of the resulting rectangle (block)
                x_len = src[1,0] / self._parcelsy # ====> divido pela qtd de parcelas y pq é transposto
                # src[3,1] is height of the resulting rectangle (block)
@@ -159,6 +159,7 @@ class Cropper():
                     srcPoints: np.ndarray, 
                     dstPoints: np.ndarray) -> np.ndarray:
         if not (self._w and self._h):
+            print("DENTRO DO IF ESTRANHOOOOOOOO")
             self._w, self._h = int(srcPoints[2, 0]), int(srcPoints[2, 1])
         crop = np.zeros((self._h, self._w, 3))
 
@@ -167,8 +168,9 @@ class Cropper():
             for x in range(self._w):
                 imgPoint = M @ np.array([x, y, 1])
                 j, i = imgPoint[:2] / imgPoint[2]
+
 #                crop[y, x] = np.flip(img[int(i), int(j)])
-                crop[y, x] = img[int(i), int(j)]  #==> deu certo, mas fundo azul
+                crop[y, x] = np.flip(img[int(i), int(j)])  #==> deu certo, mas fundo azul
         print(" dentro do getCrop 2 - valor crop = ")
         return crop
 
@@ -180,7 +182,7 @@ class Cropper():
         print("Estou no savveCropsP8. valor do scale ou s = ", s)
         for k, g in enumerate(self._grids1_a_4):
             print("K = setor = ", k)
-            if k == 2:
+            if k == 4: #para o Setor 5
                for i in range(self._parcelsy):
                    print(" i = ", i)
                    for j in range(self._parcelsx):
@@ -189,12 +191,9 @@ class Cropper():
 # scales every point of the block
                        print("TAMAHO DE G = ", len(g))
 #                       dst = np.array([s*g[i,j], s*g[i, j+1],  s*g[i+1, j+1], s*g[i+1, j]],dtype="float32")
-                       teste = np.array([g[i,j], g[i+1, j],  g[i+1, j+1], g[i, j+1]],dtype="float32")
+
                        dst = np.array([s*g[i,j], s*g[i+1, j],  s*g[i+1, j+1], s*g[i, j+1]],dtype="float32")
-                       print("TESTE = ")
-                       print(teste)
-                       print("DST = ")
-                       print(dst)
+
                        # gets the corresponding rectangle of the (scaled) trapezium
                        src = self.getDstTransformPoints(dst)
                     # given the coordinates, extracts the crop of the parcel from the original image
@@ -230,7 +229,7 @@ class Cropper():
 
     def make_numbers_p8(self, line, col, numLines, numColumns, p8Block: int):
 
-        if p8Block == 3:  # trocar por 5 (ultimo setor da P8)
+        if p8Block == 5:  # trocar por 5 (ultimo setor da P8)
 #           index = (numLines * 5) - (numLines * col) - line
 #           index = (numLines * numColumns) - (numLines * col) - line
            index = (numLines* (numColumns-(col+1))) + (line+1)        
@@ -241,6 +240,4 @@ class Cropper():
 #           index = ((numLines - line) * numColumns) - col
 #           index = ((line+1) * numColumns) - col
         return p8Block, index
-
-
 
