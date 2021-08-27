@@ -87,25 +87,10 @@ if __name__ == '__main__':
     mycropper.sortCorners()
     gui.drawRectangle(mycropper.gridCornersX, mycropper.gridCornersY)
 
-#alterei o retorno do calcGridsPoints para devolver dois resuldos: o grids dos setors 1 a 4, que sao 9X5 e grid do setor 5, que é 5x9
-    grids1_a_4, grid5 = mycropper.calcGridsPoints()
-    print(" GRIDS 1 a 4 do viewer ===> ")
-    print(grids1_a_4)
-
-    print(" GRID 5 do viewer ===> ")
-    print(grid5)
-
-    for points in grids1_a_4:
-        print("estou no for grids1_a_4: ")
+    grids = mycropper.calcGridsPoints()
+    for points in grids:
         gui.drawPoints(points[..., 0], points[..., 1])
-    #acrescentei para o setor 5
-    for points in grid5:
-        print("estou no for grid 5: ")
-        gui.drawPoints(points[..., 0], points[..., 1])
-
-    print("sai do for grids")
-    gui.drawGridsLines(grids1_a_4, grid5, color='r')
-    print("desenhei a grade")
+    gui.drawGridsLines(grids, color='r')
 
     # tip: comment the if below if you only want to view if your drawing of the blocks was good enough to generate decent parcels
     if args.output_dir != "":
@@ -117,13 +102,10 @@ if __name__ == '__main__':
                             outputdir=args.output_dir,
                             timestamp=args.timestamp,
                             scale=4)
-    print("vou para gui.block()")        
     gui.block()
-    print("sai do gui.block() ")            
 
     if args.save_points == True:
         corners = np.array([flat_list(mycropper.gridCornersY), 
                             flat_list(mycropper.gridCornersX)]).T
         save_points(args.img, corners)
-
 

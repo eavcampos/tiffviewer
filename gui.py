@@ -62,39 +62,17 @@ class GUI():
         plt.scatter(x, y, color=color)
         plt.draw()
     
-    def drawGridsLines(self, grids1_a_4: List[np.ndarray], grid5: List[np.ndarray], color: str = 'g') -> None:
+#    def drawGridsLines(self, grids1_a_4: List[np.ndarray], grid5: List[np.ndarray], color: str = 'g') -> None:
+    def drawGridsLines(self, grids: List[np.ndarray], color: str = 'g') -> None:
         cont = 1 
-        for grid in grids1_a_4:
-            print("nao estou na ultima grid")
+        for grid in grids:
             y_size, x_size, *_ = grid.shape
 
-            print(" grid = " , grid)
-            print("y_size = ", y_size)
-            print("x_size = ", x_size)
-
             for i in range(y_size):
-                print("i dentro do drawGridsLines = ", i)
                 plt.plot(grid[i, ..., 0], grid[i, ..., 1], color=color)
 
             for j in range(x_size):
-                print("j dentro do drawGridsLines = ", j)
                 plt.plot(grid[..., j, 0], grid[..., j, 1], color=color)
-
-#        for grid in grid5:
-#            print("nao estou na ultima grid")
-#            y_size, x_size, *_ = grid.shape
-
-#            print(" grid = " , grid)
-#            print("y_size = ", y_size)
-#            print("x_size = ", x_size)
-
-#            for i in range(y_size):
-#                print("i dentro do drawGridsLines = ", i)
-#                plt.plot(grid[i, ..., 0], grid[i, ..., 1], color=color)
-
-#            for j in range(x_size):
-#                print("j dentro do drawGridsLines = ", j)
-#                plt.plot(grid[..., j, 0], grid[..., j, 1], color=color)
 
 
     def imshow(self, img: np.ndarray) -> None:
